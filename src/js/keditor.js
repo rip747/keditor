@@ -764,8 +764,6 @@
                 if (typeof options.containerSettingInitFunction === 'function') {
                     flog('Initialize container setting panel');
                     options.containerSettingInitFunction.call(self, form, self);
-                } else {
-                    error('"containerSettingInitFunction" is not function!');
                 }
             }
         },
