@@ -344,10 +344,10 @@ body.highlighted-container-content .keditor-container-content:before {
 .keditor-container:hover:before {
   border-color: #b5e4f6;
 }
-.keditor-container.showed-keditor-toolbar:before {
+.keditor-container.keditor-showed-toolbar:before {
   border-color: #2eb2e4;
 }
-.keditor-container.showed-keditor-toolbar > .keditor-toolbar {
+.keditor-container.keditor-showed-toolbar > .keditor-toolbar {
   display: block;
 }
 .keditor-container-content {
@@ -410,10 +410,10 @@ body.highlighted-container-content .keditor-container-content:before {
   z-index: 2;
 }
 .keditor-component:hover:before,
-.keditor-component.showed-keditor-toolbar:before {
+.keditor-component.keditor-showed-toolbar:before {
   display: block;
 }
-.keditor-component.showed-keditor-toolbar .keditor-component-content {
+.keditor-component.keditor-showed-toolbar .keditor-component-content {
   outline: none !important;
 }
 .keditor-component:hover {
