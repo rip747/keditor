@@ -648,8 +648,8 @@
                 connectToSortable: body.find('.keditor-content-area'),
                 start: function () {
                     $('[contenteditable]').blur();
-                    $('.keditor-container.showed-keditor-toolbar').removeClass('showed-keditor-toolbar');
-                    $('.keditor-component.showed-keditor-toolbar').removeClass('showed-keditor-toolbar');
+                    $('.keditor-container.keditor-showed-toolbar').removeClass('keditor-showed-toolbar');
+                    $('.keditor-component.keditor-showed-toolbar').removeClass('keditor-showed-toolbar');
                 },
                 stop: function () {
                     snippetsList.find('.keditor-snippet[data-type^=component]').draggable('option', 'connectToSortable', body.find('.keditor-container-content'));
@@ -662,8 +662,8 @@
                 connectToSortable: body.find('.keditor-container-content'),
                 start: function () {
                     body.find('[contenteditable]').blur();
-                    body.find('.keditor-container.showed-keditor-toolbar').removeClass('showed-keditor-toolbar');
-                    body.find('.keditor-component.showed-keditor-toolbar').removeClass('showed-keditor-toolbar');
+                    body.find('.keditor-container.keditor-showed-toolbar').removeClass('keditor-showed-toolbar');
+                    body.find('.keditor-component.keditor-showed-toolbar').removeClass('keditor-showed-toolbar');
                     body.addClass('highlighted-container-content');
                 },
                 stop: function () {
@@ -754,10 +754,9 @@
                 var containerForm = $("#"+options.containerSettingId);
                 // if it does
                 if(containerForm.length > 0){
-                	// hide the form if not already hidden
-                	containerForm.hide();
                 	// grab the contents and append to #keditor-container-setting
-                	form.append(containerForm.html());
+                	containerForm.show();
+                	form.append(containerForm);
                 }
                 settingForms.append(form);
                 
@@ -1015,9 +1014,9 @@
                         );
                         helper.replaceWith(container);
                         
-                        if (!container.hasClass('showed-keditor-toolbar')) {
-                            $('.keditor-container.showed-keditor-toolbar').removeClass('showed-keditor-toolbar');
-                            container.addClass('showed-keditor-toolbar');
+                        if (!container.hasClass('keditor-showed-toolbar')) {
+                            $('.keditor-container.keditor-showed-toolbar').removeClass('keditor-showed-toolbar');
+                            container.addClass('keditor-showed-toolbar');
                         }
                         
                         if (typeof options.onContainerSnippetDropped === 'function') {
@@ -1174,9 +1173,9 @@
                         container = item.closest('.keditor-container');
                     }
                     
-                    if (!container.hasClass('showed-keditor-toolbar')) {
-                        $('.keditor-container.showed-keditor-toolbar').removeClass('showed-keditor-toolbar');
-                        container.addClass('showed-keditor-toolbar');
+                    if (!container.hasClass('keditor-showed-toolbar')) {
+                        $('.keditor-container.keditor-showed-toolbar').removeClass('keditor-showed-toolbar');
+                        container.addClass('keditor-showed-toolbar');
                     }
                     
                     if (typeof options.onContainerChanged === 'function') {
@@ -1364,10 +1363,10 @@
                 if (container) {
                     flog('Click on .keditor-container', container);
                     
-                    if (!container.hasClass('showed-keditor-toolbar')) {
-                        body.find('.keditor-container.showed-keditor-toolbar').removeClass('showed-keditor-toolbar');
-                        body.find('.keditor-component.showed-keditor-toolbar').removeClass('showed-keditor-toolbar');
-                        container.addClass('showed-keditor-toolbar');
+                    if (!container.hasClass('keditor-showed-toolbar')) {
+                        body.find('.keditor-container.keditor-showed-toolbar').removeClass('keditor-showed-toolbar');
+                        body.find('.keditor-component.keditor-showed-toolbar').removeClass('keditor-showed-toolbar');
+                        container.addClass('keditor-showed-toolbar');
                         
                         var contentArea = container.parent();
                         if (typeof options.onContainerSelected === 'function') {
@@ -1376,8 +1375,8 @@
                     }
                 } else {
                     if (!sidebar) {
-                        body.find('.keditor-container.showed-keditor-toolbar').removeClass('showed-keditor-toolbar');
-                        body.find('.keditor-component.showed-keditor-toolbar').removeClass('showed-keditor-toolbar');
+                        body.find('.keditor-container.keditor-showed-toolbar').removeClass('keditor-showed-toolbar');
+                        body.find('.keditor-component.keditor-showed-toolbar').removeClass('keditor-showed-toolbar');
                     }
                 }
                 
@@ -1385,9 +1384,9 @@
                 if (component) {
                     flog('Click on .keditor-component', component);
                     
-                    if (!component.hasClass('showed-keditor-toolbar')) {
-                        body.find('.keditor-component.showed-keditor-toolbar').removeClass('showed-keditor-toolbar');
-                        component.addClass('showed-keditor-toolbar');
+                    if (!component.hasClass('keditor-showed-toolbar')) {
+                        body.find('.keditor-component.keditor-showed-toolbar').removeClass('keditor-showed-toolbar');
+                        component.addClass('keditor-showed-toolbar');
                         
                         var contentArea = component.parent();
                         if (typeof options.onComponentSelected === 'function') {
@@ -1396,7 +1395,7 @@
                     }
                 } else {
                     if (!sidebar) {
-                        body.find('.keditor-component.showed-keditor-toolbar').removeClass('showed-keditor-toolbar');
+                        body.find('.keditor-component.keditor-showed-toolbar').removeClass('keditor-showed-toolbar');
                     }
                 }
             });
