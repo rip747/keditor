@@ -1091,7 +1091,9 @@
                     '</div>'
                 );
                 
-                container.attr('id', self.generateId('container'));
+                if (!container.attr('id')) {
+                	container.attr('id', self.generateId('container'));
+                }
                 
                 var containerContents = container.find('[data-type="container-content"]');
                 flog('Initialize ' + containerContents.length + ' container content(s)');
@@ -1123,7 +1125,9 @@
             var options = self.options;
             var body = self.body;
             containerContent.addClass('keditor-container-content');
-            containerContent.attr('id', self.generateId('container-content'));
+            if (!containerContent.attr('id')) {
+            	containerContent.attr('id', self.generateId('container-content'));
+            }
             
             flog('Initialize $.fn.droppable for container content');
             containerContent.droppable({
@@ -1213,7 +1217,7 @@
             }
             
             if (isExisting) {
-                component.addClass('existing-component');
+                component.addClass('keditor-existing-component');
             }
             
             self.initComponent(contentArea, container, component);
@@ -1281,10 +1285,14 @@
             
             if (!component.hasClass('keditor-initialized-component') || !component.hasClass('keditor-initializing-component')) {
                 component.addClass('keditor-initializing-component');
-                component.attr('id', self.generateId('component'));
+                if (!component.attr('id')) {
+                	component.attr('id', self.generateId('component'));
+                }
                 
                 var componentContent = component.children('.keditor-component-content');
-                componentContent.attr('id', self.generateId('component-content'));
+                if (!componentContent.attr('id')) {
+                	componentContent.attr('id', self.generateId('component-content'));
+                }
                 
                 var componentType = self.getComponentType(component);
                 flog('Component type: ' + componentType);
@@ -1667,10 +1675,13 @@
             var self = this;
             var options = self.options;
             var containerInner = container.children('.keditor-container-inner').clone();
+            var _container = $("<section/>");
+            var _wrapper = $("<div/>");
             
             containerInner.find('[data-type=container-content]').each(function () {
                 var containerContent = $(this);
-                containerContent.removeClass('keditor-container-content ui-droppable ui-sortable').removeAttr('id');
+                //containerContent.removeClass('keditor-container-content ui-droppable ui-sortable').removeAttr('id');
+                containerContent.removeClass('keditor-container-content ui-droppable ui-sortable');
                 
                 containerContent.children('.keditor-component').each(function () {
                     var component = $(this);
@@ -1679,7 +1690,22 @@
                 });
             });
             
-            return '<section>' + containerInner.html() + '</section>';
+            $.each(container.prop("attributes"), function(i, attribute){
+            	var _name = attribute.name.toLowerCase();
+            	var _value = attribute.value;
+            	if(_name === "class"){
+            		_value = $.trim(_value.replace (/(^|\s)(keditor|ui-droppable|ui-sortable)\S+/g, ''));
+            	}
+            	if(_value.length > 0){
+					_container.prop(attribute.name, _value);            		
+            	}
+            });
+            
+            //return '<section>' + containerInner.html() + '</section>';
+            
+            var ret = _wrapper.html(_container.html(containerInner.html())).html();
+            
+            return ret;
         }
         
     };
