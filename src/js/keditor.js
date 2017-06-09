@@ -420,7 +420,7 @@
                         
                         if (options.snippetsTooltipEnabled || options.tabTooltipEnabled) {
                             flog('Initialize Bootstrap tooltip plugin');
-                            body.find('#' + options.snippetsListId).find('[data-toggle="tooltip"]').tooltip();
+                            body.find('#' + options.snippetsListId).find('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
                         }
                         
                         if (typeof options.onReady === 'function') {
