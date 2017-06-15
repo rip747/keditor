@@ -604,17 +604,28 @@
             
             self.snippetsContainerCategories = self.beautifyCategories(self.snippetsContainerCategories);
             self.snippetsComponentCategories = self.beautifyCategories(self.snippetsComponentCategories);
+
+            var snippetsContentContainer = [];
+                snippetsContentContainer.push('<ul id="keditor-snippets-type-switcher" class="keditor-ui keditor-tabs">');
+                    if(snippetsContainerHtml.length){
+                        snippetsContentContainer.push('<li class="keditor-ui keditor-tab"><a class="keditor-ui" href="#keditor-container-snippets-tab"' + (options.tabTooltipEnabled ? 'data-toggle="tooltip" data-placement="bottom"' : '') + ' title="' + options.tabContainersTitle + '">' + options.tabContainersText + '</a></li>');
+                    }
+                    if(snippetsComponentHtml.length){
+                        snippetsContentContainer.push('<li class="keditor-ui keditor-tab"><a class="keditor-ui" href="#keditor-component-snippets-tab"' + (options.tabTooltipEnabled ? 'data-toggle="tooltip" data-placement="bottom"' : '') + ' title="' + options.tabComponentsTitle + '">' + options.tabComponentsText + '</a></li>');
+                    }
+                snippetsContentContainer.push('</ul>');
+                snippetsContentContainer.push('<div id="keditor-snippets-container" class="keditor-ui keditor-tabs-content">');
+                    if(snippetsContainerHtml.length){
+                        snippetsContentContainer.push('<div class="keditor-ui keditor-tab-content" id="keditor-container-snippets-tab"><div class="keditor-ui keditor-tab-content-inner">' + snippetsContainerHtml + '</div></div>');
+                    }
+                    if(snippetsComponentHtml.length){
+                        snippetsContentContainer.push('<div class="keditor-ui keditor-tab-content" id="keditor-component-snippets-tab"><div class="keditor-ui keditor-tab-content-inner">' + snippetsComponentHtml + '</div></div>');
+                    }
+                snippetsContentContainer.push('</div>');
             
-            body.find('#' + options.snippetsListId).html(
-                '<ul id="keditor-snippets-type-switcher" class="keditor-ui keditor-tabs">' +
-                '    <li class="keditor-ui keditor-tab active"><a class="keditor-ui" href="#keditor-container-snippets-tab"' + (options.tabTooltipEnabled ? 'data-toggle="tooltip" data-placement="bottom"' : '') + ' title="' + options.tabContainersTitle + '">' + options.tabContainersText + '</a></li>' +
-                '    <li class="keditor-ui keditor-tab"><a class="keditor-ui" href="#keditor-component-snippets-tab"' + (options.tabTooltipEnabled ? 'data-toggle="tooltip" data-placement="bottom"' : '') + ' title="' + options.tabComponentsTitle + '">' + options.tabComponentsText + '</a></li>' +
-                '</ul>' +
-                '<div id="keditor-snippets-container" class="keditor-ui keditor-tabs-content">' +
-                '   <div class="keditor-ui keditor-tab-content active" id="keditor-container-snippets-tab"><div class="keditor-ui keditor-tab-content-inner">' + snippetsContainerHtml + '</div></div>' +
-                '   <div class="keditor-ui keditor-tab-content" id="keditor-component-snippets-tab"><div class="keditor-ui keditor-tab-content-inner">' + snippetsComponentHtml + '</div></div>' +
-                '</div>'
-            ).addClass('loaded-snippets');
+            body.find('#' + options.snippetsListId).html(snippetsContentContainer.join('')).addClass('loaded-snippets');
+            body.find("#keditor-snippets-type-switcher .keditor-tab:first").addClass("active");
+            body.find("#keditor-snippets-container .keditor-tab-content:first").addClass("active");
             body.find('#keditor-snippets-content').html(snippetsContentHtml);
         },
         
