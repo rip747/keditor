@@ -64,6 +64,7 @@ gulp.task('copy-js', function () {
         .pipe(rename({
             suffix: '-' + pjson.version
         }))
+        .pipe(replace('@{version}', pjson.version))
         .pipe(gulp.dest('./dist/js/'));
 });
 gulp.task('copy-snippets-src-examples', function () {
