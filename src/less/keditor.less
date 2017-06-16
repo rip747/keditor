@@ -51,7 +51,7 @@ body.opened-keditor-sidebar {
    highlighted-container-content
    ================================================================================== */
 body.highlighted-container-content {
-    .keditor-container-content {
+    [data-keditor-container-content] {
         &:before {
             border-color: @container-content-outline-highlighted;
         }
@@ -403,7 +403,7 @@ body.highlighted-container-content {
     }
 }
 
-.keditor-container-content {
+[data-keditor-container-content] {
     min-height: 50px !important;
     position: relative;
     

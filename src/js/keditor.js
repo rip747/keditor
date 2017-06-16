@@ -663,14 +663,16 @@
                     $('.keditor-component.keditor-showed-toolbar').removeClass('keditor-showed-toolbar');
                 },
                 stop: function () {
-                    snippetsList.find('.keditor-snippet[data-type^=component]').draggable('option', 'connectToSortable', body.find('.keditor-container-content'));
+                    //snippetsList.find('.keditor-snippet[data-type^=component]').draggable('option', 'connectToSortable', body.find('.keditor-container-content'));
+                    snippetsList.find('.keditor-snippet[data-type^=component]').draggable('option', 'connectToSortable', body.find('[data-keditor-container-content]'));
                 }
             });
             
             snippetsList.find('.keditor-snippet[data-type^=component]').draggable({
                 helper: 'clone',
                 revert: 'invalid',
-                connectToSortable: body.find('.keditor-container-content'),
+                //connectToSortable: body.find('.keditor-container-content'),
+                connectToSortable: body.find('[data-keditor-container-content]'),
                 start: function () {
                     body.find('[contenteditable]').blur();
                     body.find('.keditor-container.keditor-showed-toolbar').removeClass('keditor-showed-toolbar');
@@ -1084,9 +1086,11 @@
             
             var self = this;
             var options = self.options;
-            
-            if (!container.hasClass('keditor-initialized-container') || !container.hasClass('keditor-initializing-container')) {
-                container.addClass('keditor-initializing-container');
+
+            //if (!container.hasClass('keditor-initialized-container') || !container.hasClass('keditor-initializing-container')) {
+            if (container.attr('data-keditor-initialized-container') === undefined || container.attr('data-keditor-initializing-container') === undefined) {
+                //container.addClass('keditor-initializing-container');
+                container.attr('data-keditor-initializing-container', 1);
                 
                 var settingBtn = '';
                 if (options.containerSettingEnabled === true) {
@@ -1118,10 +1122,13 @@
                     options.onInitContainer.call(contentArea, container);
                 }
                 
-                container.addClass('keditor-initialized-container');
-                container.removeClass('keditor-initializing-container');
+                //container.addClass('keditor-initialized-container');
+                container.attr("data-keditor-initialized-container", 1);
+                //container.removeClass('keditor-initializing-container');
+                container.removeAttr("data-keditor-initialized-container");
             } else {
-                if (container.hasClass('keditor-initialized-container')) {
+                //if (container.hasClass('keditor-initialized-container')) {
+                if (container.attr('data-keditor-initialized-container') !== undefined) {
                     flog('Container is already initialized!');
                 } else {
                     flog('Container is initializing...');
@@ -1135,7 +1142,8 @@
             var self = this;
             var options = self.options;
             var body = self.body;
-            containerContent.addClass('keditor-container-content');
+            //containerContent.addClass('keditor-container-content');
+            containerContent.attr('data-keditor-container-content', 1);
             if (!containerContent.attr('id')) {
             	containerContent.attr('id', self.generateId('container-content'));
             }
@@ -1151,7 +1159,8 @@
             containerContent.sortable({
                 handle: '.btn-component-reposition',
                 items: '> section',
-                connectWith: '.keditor-container-content',
+                //connectWith: '.keditor-container-content',
+                connectWith: '[data-keditor-container-content]',
                 tolerance: 'pointer',
                 sort: function () {
                     $(this).removeClass('ui-state-default');
@@ -1454,7 +1463,8 @@
                 var snippetsList = body.find('#' + options.snippetsListId);
                 var componentSnippets = snippetsList.find('.keditor-snippet[data-type^=component]');
                 var currentLinkedContainerContents = componentSnippets.draggable('option', 'connectToSortable');
-                componentSnippets.draggable('option', 'connectToSortable', currentLinkedContainerContents.add(newContainer.find('.keditor-container-content')));
+                //componentSnippets.draggable('option', 'connectToSortable', currentLinkedContainerContents.add(newContainer.find('.keditor-container-content')));
+                componentSnippets.draggable('option', 'connectToSortable', currentLinkedContainerContents.add(newContainer.find('[data-keditor-container-content]')));
                 
                 flog('Container is duplicated');
                 

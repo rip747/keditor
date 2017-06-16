@@ -35,7 +35,7 @@ body.opened-keditor-sidebar #keditor-sidebar {
 /* ==================================================================================
    highlighted-container-content
    ================================================================================== */
-body.highlighted-container-content .keditor-container-content:before {
+body.highlighted-container-content [data-keditor-container-content]:before {
   border-color: #2eb2e4;
 }
 /* ==================================================================================
@@ -350,11 +350,11 @@ body.highlighted-container-content .keditor-container-content:before {
 .keditor-container.keditor-showed-toolbar > .keditor-toolbar {
   display: block;
 }
-.keditor-container-content {
+[data-keditor-container-content] {
   min-height: 50px !important;
   position: relative;
 }
-.keditor-container-content:before {
+[data-keditor-container-content]:before {
   position: absolute;
   top: -1px;
   left: -1px;
