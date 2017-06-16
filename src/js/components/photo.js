@@ -73,28 +73,12 @@
             );
 
             var photoEdit = form.find('#photo-edit');
-            var fileInput = photoEdit.next();
+            
             photoEdit.on('click', function (e) {
                 e.preventDefault();
+                $.keditor.components['photo'].handleChangePhoto(form, keditor);
+            });
 
-                fileInput.trigger('click');
-            });
-            fileInput.on('change', function () {
-                var file = this.files[0];
-                if (/image/.test(file.type)) {
-                    var img = keditor.getSettingComponent().find('img');
-                    img.attr('src', URL.createObjectURL(file));
-                    img.css({
-                        width: '',
-                        height: ''
-                    });
-                    img.load(function () {
-                        keditor.showSettingPanel(keditor.getSettingComponent(), options);
-                    });
-                } else {
-                    alert('Your selected file is not photo!');
-                }
-            });
 
             var inputAlign = form.find('#photo-align');
             inputAlign.on('change', function () {
@@ -153,6 +137,28 @@
                     'width': newWidth
                 });
                 inputWidth.val(newWidth);
+            });
+        },
+
+        handleChangePhoto: function(form, keditor){
+            var photoEdit = form.find('#photo-edit');
+            var fileInput = photoEdit.next();
+            fileInput.trigger('click');
+            fileInput.on('change', function () {
+                var file = this.files[0];
+                if (/image/.test(file.type)) {
+                    var img = keditor.getSettingComponent().find('img');
+                    img.attr('src', URL.createObjectURL(file));
+                    img.css({
+                        width: '',
+                        height: ''
+                    });
+                    img.load(function () {
+                        keditor.showSettingPanel(keditor.getSettingComponent(), options);
+                    });
+                } else {
+                    alert('Your selected file is not photo!');
+                }
             });
         },
 
