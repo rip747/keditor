@@ -26,8 +26,8 @@
                 '<label for="audioFileInput" class="col-sm-12">Audio file</label>' +
                 '<div class="col-sm-12">' +
                 '<div class="audio-toolbar">' +
-                '<a href="#" class="btn-audioFileInput btn btn-sm btn-primary"><i class="fa fa-upload"></i></a>' +
-                '<input id="audioFileInput" type="file" style="display: none">' +
+                '<a href="#" class="btn-audioFileInput btn btn-sm btn-primary">Change Audio</a>' +
+                '<input id="audioFileInput" type="file" style="display: none" accept="audio/*">' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
@@ -59,26 +59,10 @@
             var options = keditor.options;
             
             var audio = component.find('audio');
-            var fileInput = form.find('#audioFileInput');
             var btnAudioFileInput = form.find('.btn-audioFileInput');
             btnAudioFileInput.off('click').on('click', function (e) {
                 e.preventDefault();
-                
-                fileInput.trigger('click');
-            });
-            fileInput.off('change').on('change', function () {
-                var file = this.files[0];
-                if (/audio/.test(file.type)) {
-                    // Todo: Upload to your server :)
-                    
-                    audio.attr('src', URL.createObjectURL(file));
-                    
-                    audio.load(function () {
-                        keditor.showSettingPanel(component, options);
-                    });
-                } else {
-                    alert('Your selected file is not an audio file!');
-                }
+                $.keditor.components['audio'].handleChangeAudio(form, keditor);
             });
             
             var autoplayToggle = form.find('#audio-autoplay');
@@ -103,6 +87,28 @@
             audioWidth.off('change').on('change', function () {
                 audio.css('width', this.value + '%');
             });
-        }
+        },
+
+        handleChangeAudio: function(form, keditor){
+            var btnAudioFileInput = form.find('.btn-audioFileInput');
+            var fileInput = form.find('#audioFileInput');
+
+            fileInput.trigger('click');
+            fileInput.off('change').on('change', function () {
+                var file = this.files[0];
+                if (/audio/.test(file.type)) {
+                    // Todo: Upload to your server :)
+                    
+                    audio.attr('src', URL.createObjectURL(file));
+                    
+                    audio.load(function () {
+                        keditor.showSettingPanel(component, options);
+                    });
+                } else {
+                    alert('Your selected file is not an audio file!');
+                }
+            });
+        },
+
     };
 })(jQuery);

@@ -26,8 +26,8 @@
                 '<label for="videoFileInput" class="col-sm-12">Video file</label>' +
                 '<div class="col-sm-12">' +
                 '<div class="video-toolbar">' +
-                '<a href="#" class="btn-videoFileInput btn btn-sm btn-primary"><i class="fa fa-upload"></i></a>' +
-                '<input id="videoFileInput" type="file" style="display: none">' +
+                '<a href="#" class="btn-videoFileInput btn btn-sm btn-primary">Change Video</a>' +
+                '<input id="videoFileInput" type="file" style="display: none" accept="video/*">' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
@@ -73,26 +73,12 @@
 
             var options = keditor.options;
             var video = component.find('video');
-            var fileInput = form.find('#videoFileInput');
+
             var btnVideoFileInput = form.find('.btn-videoFileInput');
             btnVideoFileInput.on('click', function (e) {
                 e.preventDefault();
-
+                $.keditor.components['video'].handleChangeVideo(form, keditor);
                 fileInput.trigger('click');
-            });
-            fileInput.off('change').on('change', function () {
-                var file = this.files[0];
-                if (/video/.test(file.type)) {
-                    // Todo: Upload to your server :)
-
-                    video.attr('src', URL.createObjectURL(file));
-
-                    video.load(function () {
-                        keditor.showSettingPanel(component, options);
-                    });
-                } else {
-                    alert('Your selected file is not an video file!');
-                }
             });
 
             var autoplayToggle = form.find('#video-autoplay');
@@ -146,6 +132,27 @@
                 video.removeProp('width');
                 video.removeProp('height');
             });
-        }
+        },
+
+        handleChangeVideo: function(form, keditor){
+            var btnVideoFileInput = form.find('.btn-videoFileInput');
+            var fileInput = form.find('#videoFileInput');
+
+            fileInput.trigger('click');
+            fileInput.off('change').on('change', function () {
+                var file = this.files[0];
+                if (/video/.test(file.type)) {
+                    // Todo: Upload to your server :)
+
+                    video.attr('src', URL.createObjectURL(file));
+
+                    video.load(function () {
+                        keditor.showSettingPanel(component, options);
+                    });
+                } else {
+                    alert('Your selected file is not an video file!');
+                }
+            });
+        },
     };
 })(jQuery);

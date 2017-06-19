@@ -27,7 +27,7 @@
                 '   <div class="form-group">' +
                 '       <div class="col-sm-12">' +
                 '           <button type="button" class="btn btn-block btn-primary" id="photo-edit">Change Photo</button>' +
-                '           <input type="file" style="display: none" />' +
+                '           <input type="file" style="display: none" accept="image/*" />' +
                 '       </div>' +
                 '   </div>' +
                 '   <div class="form-group">' +
