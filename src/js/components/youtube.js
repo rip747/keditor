@@ -7,7 +7,8 @@
             flog('getContent "youtube" component', component);
 
             var componentContent = component.children('.keditor-component-content');
-            componentContent.find('.youtube-cover').remove();
+            // removing since this break when restoring from save
+            //componentContent.find('.youtube-cover').remove();
 
             return componentContent.html();
         },

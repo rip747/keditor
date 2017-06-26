@@ -7,7 +7,8 @@
             flog('getContent "googlemap" component', component);
 
             var componentContent = component.children('.keditor-component-content');
-            componentContent.find('.googlemap-cover').remove();
+            // removing since this break when restoring from save
+            //componentContent.find('.googlemap-cover').remove();
 
             return componentContent.html();
         },

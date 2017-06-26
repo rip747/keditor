@@ -7,8 +7,9 @@
             flog('getContent "audio" component, component');
             
             var componentContent = component.children('.keditor-component-content');
-            var audio = componentContent.find('audio');
-            audio.unwrap();
+            // removing since this break when restoring from save
+            //var audio = componentContent.find('audio');
+            //audio.unwrap();
             
             return componentContent.html();
         },
@@ -57,12 +58,12 @@
             flog('showSettingForm "audio" component', form, component);
             
             var options = keditor.options;
-            
             var audio = component.find('audio');
+
             var btnAudioFileInput = form.find('.btn-audioFileInput');
             btnAudioFileInput.off('click').on('click', function (e) {
                 e.preventDefault();
-                $.keditor.components['audio'].handleChangeAudio(form, keditor);
+               KEditor.components['audio'].handleChangeAudio(form, keditor);
             });
             
             var autoplayToggle = form.find('#audio-autoplay');

@@ -7,8 +7,9 @@
             flog('getContent "video" component', component);
 
             var componentContent = component.children('.keditor-component-content');
-            var video = componentContent.find('video');
-            video.unwrap();
+            // removing since this break when restoring from save
+            //var video = componentContent.find('video');
+            //video.unwrap();
 
             return componentContent.html();
         },
@@ -77,8 +78,7 @@
             var btnVideoFileInput = form.find('.btn-videoFileInput');
             btnVideoFileInput.on('click', function (e) {
                 e.preventDefault();
-                $.keditor.components['video'].handleChangeVideo(form, keditor);
-                fileInput.trigger('click');
+                KEditor.components['video'].handleChangeVideo(form, keditor);
             });
 
             var autoplayToggle = form.find('#video-autoplay');

@@ -7,7 +7,8 @@
             flog('getContent "vimeo" component', component);
 
             var componentContent = component.children('.keditor-component-content');
-            componentContent.find('.vimeo-cover').remove();
+            // removing since this break when restoring from save
+            //componentContent.find('.vimeo-cover').remove();
 
             return componentContent.html();
         },

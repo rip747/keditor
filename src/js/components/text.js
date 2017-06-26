@@ -59,6 +59,7 @@
             });
 
             var editor = componentContent.ckeditor(self.options).editor;
+            KEditor.components['text'].customizeEditorInstance(contentArea, container, component, keditor, editor);
             editor.on('instanceReady', function () {
                 flog('CKEditor is ready', component);
 
@@ -89,6 +90,10 @@
             if (editor) {
                 editor.destroy();
             }
+        },
+
+        customizeEditorInstance: function(contentArea, container, component, keditor, editor){
+            // used for add customizations to the CKEditor instance for text components
         }
     };
 

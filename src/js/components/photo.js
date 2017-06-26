@@ -76,7 +76,7 @@
             
             photoEdit.on('click', function (e) {
                 e.preventDefault();
-                $.keditor.components['photo'].handleChangePhoto(form, keditor);
+                KEditor.components['photo'].handleChangePhoto(form, keditor);
             });
 
 
