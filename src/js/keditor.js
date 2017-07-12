@@ -211,6 +211,8 @@
         init: function (target) {
             var self = this;
             var options = self.options;
+            var initSidebarDFD = $.Deferred();
+            var initKEditorClicksDFD = $.Deferred();
             
             if (options.iframeMode) {
                 target = self.initFrame(target);
@@ -239,25 +241,36 @@
             }
             
             var body = self.body;
-            var ajaxRequest;
+
             if (body.hasClass('initialized-snippets-list')) {
+                initSidebarDFD.resolve();
                 flog('Snippets list is already initialized!');
             } else {
-                ajaxRequest = self.initSidebar();
-                body.addClass('initialized-snippets-list');
+                $.when(
+                    self.initSidebar()
+                ).done(function(data){
+                    initSidebarDFD.resolve();
+                    body.addClass('initialized-snippets-list');
+                }); 
             }
+
             if (body.hasClass('initialized-click-event-handlers')) {
+                initKEditorClicksDFD.resolve();
                 flog('CLick event handlers is already initialized!');
             } else {
                 self.initKEditorClicks();
                 body.addClass('initialized-click-event-handlers');
+                initKEditorClicksDFD.resolve();
             }
-            
+ 
             self.initContentAreas(target);
-            
-            if (!ajaxRequest && typeof options.onReady === 'function') {
-                options.onReady.call(self);
-            }
+
+            $.when(initSidebarDFD, initKEditorClicksDFD).done(function(){                
+                if (typeof options.onReady === 'function') {
+                    options.onReady.call(self);
+                }
+                flog('KEditor is loaded');
+            });
         },
         
         generateId: function (type) {
@@ -370,70 +383,80 @@
             var self = this;
             var options = self.options;
             var body = self.body;
-            body.addClass('opened-keditor-sidebar');
+            var ReturnDFD = $.Deferred();
+            var SnippetDFD = $.Deferred();
             
-            if (options.snippetsListId === KEditor.DEFAULTS.snippetsListId) {
-                flog('Render default KEditor snippet container');
-                
-                body.append(
-                    '<div id="keditor-sidebar" class="keditor-ui">' +
-                    '   <a id="keditor-sidebar-toggler" class="keditor-ui"><i class="fa fa-chevron-right"></i></a>' +
-                    '   <div id="keditor-snippets-list" class="keditor-ui"></div>' +
-                    '   <div id="keditor-snippets-content" class="keditor-ui" style="display: none"></div>' +
-                    '   <div id="keditor-setting-panel" class="keditor-ui">' +
-                    '       <div id="keditor-setting-header" class="keditor-ui">' +
-                    '           <span id="keditor-setting-title" class="keditor-ui"></span>' +
-                    '           <a href="#" id="keditor-setting-closer" class="keditor-ui"><i class="fa fa-arrow-right"></i></a>' +
-                    '       </div>' +
-                    '       <div id="keditor-setting-body" class="keditor-ui">' +
-                    '           <div id="keditor-setting-forms" class="keditor-ui"></div>' +
-                    '       </div>' +
-                    '   </div>' +
-                    '</div>'
-                );
-                self.initSidebarToggler();
-            } else {
-                flog('Render KEditor snippets content after custom snippets list with id="' + options.snippetsListId + '"');
-                body.find('#' + options.snippetsListId).after('<div id="keditor-snippets-content" class="keditor-ui" style="display: none"></div>');
-            }
-            
-            if (typeof options.snippetsUrl === 'string' && options.snippetsUrl.length > 0) {
+            if (options.snippetsUrl.length > 0) {
                 flog('Getting snippets form "' + options.snippetsUrl + '"...');
                 
-                return $.ajax({
+                $.ajax({
                     type: 'get',
                     dataType: 'html',
-                    url: options.snippetsUrl,
-                    success: function (resp) {
-                        flog('Success in getting snippets', resp);
-                        
-                        self.renderSnippets(resp);
-                        self.initSnippets();
-                        self.initTabs();
-                        self.initTabsSwitcher();
-                        self.initSettingPanel();
-                        
-                        if (options.snippetsFilterEnabled) {
-                            self.initSnippetsFilter('Container');
-                            self.initSnippetsFilter('Component');
-                        }
-                        
-                        if (options.snippetsTooltipEnabled || options.tabTooltipEnabled) {
-                            flog('Initialize Bootstrap tooltip plugin');
-                            body.find('#' + options.snippetsListId).find('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
-                        }
-                        
-                        if (typeof options.onReady === 'function') {
-                            options.onReady.call(self);
-                        }
-                    },
-                    error: function (jqXHR) {
-                        flog('Error when getting snippets', jqXHR);
-                    }
+                    url: options.snippetsUrl
+                }).done(function(data){
+                    SnippetDFD.resolve(data);
+                }).fail(function(jqXHR){
+                    flog('Error when getting snippets', jqXHR);
+                    SnippetDFD.reject();
                 });
+
             } else {
-                error('"snippetsUrl" must be not null!');
+                ReturnDFD.resolve();
+                flog('No snippets found!!!');
             }
+
+            SnippetDFD.done(function(resp){
+
+                body.addClass('opened-keditor-sidebar');
+                
+                if (options.snippetsListId === KEditor.DEFAULTS.snippetsListId) {
+                    flog('Render default KEditor snippet container');
+                    
+                    body.append(
+                        '<div id="keditor-sidebar" class="keditor-ui">' +
+                        '   <a id="keditor-sidebar-toggler" class="keditor-ui"><i class="fa fa-chevron-right"></i></a>' +
+                        '   <div id="keditor-snippets-list" class="keditor-ui"></div>' +
+                        '   <div id="keditor-snippets-content" class="keditor-ui" style="display: none"></div>' +
+                        '   <div id="keditor-setting-panel" class="keditor-ui">' +
+                        '       <div id="keditor-setting-header" class="keditor-ui">' +
+                        '           <span id="keditor-setting-title" class="keditor-ui"></span>' +
+                        '           <a href="#" id="keditor-setting-closer" class="keditor-ui"><i class="fa fa-arrow-right"></i></a>' +
+                        '       </div>' +
+                        '       <div id="keditor-setting-body" class="keditor-ui">' +
+                        '           <div id="keditor-setting-forms" class="keditor-ui"></div>' +
+                        '       </div>' +
+                        '   </div>' +
+                        '</div>'
+                    );
+                    self.initSidebarToggler();
+                } else {
+                    flog('Render KEditor snippets content after custom snippets list with id="' + options.snippetsListId + '"');
+                    body.find('#' + options.snippetsListId).after('<div id="keditor-snippets-content" class="keditor-ui" style="display: none"></div>');
+                }
+
+                flog('Success in getting snippets', resp);
+                
+                self.renderSnippets(resp);
+                self.initSnippets();
+                self.initTabs();
+                self.initTabsSwitcher();
+                self.initSettingPanel();
+                
+                if (options.snippetsFilterEnabled) {
+                    self.initSnippetsFilter('Container');
+                    self.initSnippetsFilter('Component');
+                }
+                
+                if (options.snippetsTooltipEnabled || options.tabTooltipEnabled) {
+                    flog('Initialize Bootstrap tooltip plugin');
+                    body.find('#' + options.snippetsListId).find('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
+                }
+
+                ReturnDFD.resolve();
+
+            });
+
+            return ReturnDFD;
         },
         
         initSnippetsFilter: function (type) {
@@ -699,9 +722,10 @@
                 
                 for (var tabName in options.extraTabs) {
                     var tabData = options.extraTabs[tabName];
-                    
-                    switcherWrapper.append('<li class="keditor-ui keditor-tab"><a class="keditor-ui" href="#keditor-extra-tab-' + tabName + '"' + (options.tabTooltipEnabled ? 'data-toggle="tooltip" data-placement="bottom" title="' + tabData.title + '"' : '') + '>' + tabData.text + '</a></li>');
-                    tabPaneWrapper.append('<div class="keditor-ui keditor-tab-content" id="keditor-extra-tab-' + tabName + '"><div class="keditor-tab-content-inner">' + tabData.content + '</div></div>');
+					var tabActive = (tabData.active && tabData.active == true) || false;
+                    (tabActive == true ? $(".keditor-tab,.keditor-tab-content").removeClass("active") : null);                 
+                    switcherWrapper.append('<li class="keditor-ui keditor-tab' + (tabActive == true ? ' active':'') +  '"><a class="keditor-ui" href="#keditor-extra-tab-' + tabName + '"' + (options.tabTooltipEnabled ? 'data-toggle="tooltip" data-placement="bottom" title="' + tabData.title + '"' : '') + '>' + tabData.text + '</a></li>');
+                    tabPaneWrapper.append('<div class="keditor-ui keditor-tab-content' + (tabActive == true ? ' active':'') +  '" id="keditor-extra-tab-' + tabName + '"><div class="keditor-tab-content-inner">' + tabData.content + '</div></div>');
                 }
             }
             
@@ -769,7 +793,7 @@
                 if(containerForm.length > 0){
                 	// grab the contents and append to #keditor-container-setting
                 	containerForm.show();
-                	form.append(containerForm);
+                	form.append(containerForm.html());
                 }
                 settingForms.append(form);
                 
