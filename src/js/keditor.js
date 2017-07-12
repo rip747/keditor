@@ -24,6 +24,7 @@
  * }
  * @option {String|Function} defaultComponentType Default component type of component. If type of component does not exist in KEditor.components, will be used 'defaultComponentType' as type of this component. If is function, argument is component - jQuery object of component
  * @option {String} snippetsUrl Url to snippets file
+ * @option {String} snippetsSource HTML source for snippets (useful for creating snippets dynamically)
  * @option {String} snippetsListId Id of element which contains snippets. As default, value is "keditor-snippets-list" and KEditor will render snippets sidebar automatically. If you specific other id, only snippets will rendered and put into your element
  * @option {Boolean} snippetsTooltipEnabled Bootstrap tooltip is enable for snippet or not
  * @option {String} snippetsTooltipPosition Position of Bootstrap tooltip for snippet. Can be 'left', 'right', 'top' and 'bottom'
@@ -135,6 +136,7 @@
         extraTabs: null,
         defaultComponentType: 'blank',
         snippetsUrl: 'snippets/default/snippets.html',
+        snippetsSource: "",
         snippetsListId: 'keditor-snippets-list',
         snippetsTooltipEnabled: true,
         snippetsTooltipPosition: 'left',
@@ -385,8 +387,13 @@
             var body = self.body;
             var ReturnDFD = $.Deferred();
             var SnippetDFD = $.Deferred();
-            
-            if (options.snippetsUrl.length > 0) {
+
+            if(options.snippetsSource.length > 0) {
+
+                SnippetDFD.resolve(options.snippetsSource);
+
+            } else if (options.snippetsUrl.length > 0) {
+
                 flog('Getting snippets form "' + options.snippetsUrl + '"...');
                 
                 $.ajax({
@@ -406,7 +413,6 @@
             }
 
             SnippetDFD.done(function(resp){
-
                 body.addClass('opened-keditor-sidebar');
                 
                 if (options.snippetsListId === KEditor.DEFAULTS.snippetsListId) {
