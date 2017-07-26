@@ -69,6 +69,8 @@
  * @option {Function} onBeforeDynamicContentLoad Callback will be called before loading dynamic content. Arguments: dynamicElement, component
  * @option {Function} onDynamicContentLoaded Callback will be called after dynamic content is loaded. Arguments: dynamicElement, response, status, xhr
  * @option {Function} onDynamicContentError Callback will be called if loading dynamic content is error, abort or timeout. Arguments: dynamicElement, response, status, xhr
+ * @option {String} containerDeleteConfirmation Confirmation message to display when deleting a container
+ * @option {String} componentDeleteConfirmation Confirmation message to display when deleting a component
  */
 (function ($) {
     // Log function will print log message when "KEditor.debug" equals "true"
@@ -195,7 +197,9 @@
         onDynamicContentLoaded: function (dynamicElement, response, status, xhr) {
         },
         onDynamicContentError: function (dynamicElement, response, status, xhr) {
-        }
+        },
+        containerDeleteConfirmation: "Are you sure that you want to delete this container? This action can not be undone!",
+        componentDeleteConfirmation: "Are you sure that you want to delete this component? This action can not be undone!"
     };
     
     // Component types
@@ -1513,7 +1517,7 @@
                 var btn = $(this);
                 flog('Click on .btn-container-delete', btn);
                 
-                if (confirm('Are you sure that you want to delete this container? This action can not be undo!')) {
+                if (confirm(options.containerDeleteConfirmation)) {
                     var container = btn.closest('.keditor-container');
                     var components = container.find('.keditor-component');
                     var contentArea = container.parent();
@@ -1605,7 +1609,7 @@
                 var btn = $(this);
                 flog('Click on .btn-component-delete', btn);
                 
-                if (confirm('Are you sure that you want to delete this component? This action can not be undo!')) {
+                if (confirm(options.componentDeleteConfirmation)) {
                     var component = btn.closest('.keditor-component');
                     var contentArea = component.closest('.keditor-content-area');
                     
