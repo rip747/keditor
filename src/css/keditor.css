@@ -352,6 +352,7 @@ body.highlighted-container-content [data-keditor-container-content]:before {
 }
 [data-keditor-container-content] {
   min-height: 50px !important;
+  height: 50px;
   position: relative;
 }
 [data-keditor-container-content]:before {
