@@ -1082,7 +1082,11 @@
             });
             
             flog('Initialize existing containers in content area');
-            contentArea.children('section').each(function () {
+
+            // better way of initlaizing containers since they don't have to be direct descendants
+            // really the only way of using this thing as a layout builder also.
+            contentArea.find("[data-type='container-content']").closest("section").each(function () {
+                flog('initContentArea:convert', $(this));
                 self.convertToContainer(contentArea, $(this));
             });
             
@@ -1159,7 +1163,7 @@
                 //container.addClass('keditor-initialized-container');
                 container.attr("data-keditor-initialized-container", 1);
                 //container.removeClass('keditor-initializing-container');
-                container.removeAttr("data-keditor-initialized-container");
+                container.removeAttr("data-keditor-initializing-container");
             } else {
                 //if (container.hasClass('keditor-initialized-container')) {
                 if (container.attr('data-keditor-initialized-container') !== undefined) {
@@ -1262,10 +1266,12 @@
             var component;
             
             if (isSection) {
+                flog('convertToComponent',"isSection:true");
                 target.addClass('keditor-component');
                 target.wrapInner('<section class="keditor-ui keditor-component-content"></section>');
                 component = target;
             } else {
+                flog('convertToComponent',"isSection:false");
                 target.wrap('<section class="keditor-ui keditor-component"><section class="keditor-ui keditor-component-content"></section></section>');
                 component = target.parent().parent();
             }
@@ -1712,6 +1718,7 @@
             } else {
                 flog('"getContent" function of component type "' + componentType + '" does not exist. Using default getContent method');
                 var componentContent = component.children('.keditor-component-content');
+                flog('getComponentContent:content', componentContent);
                 content = componentContent.html();
             }
             
@@ -1738,10 +1745,12 @@
                 //containerContent.removeClass('keditor-container-content ui-droppable ui-sortable').removeAttr('id');
                 containerContent.removeClass('keditor-container-content ui-droppable ui-sortable');
                 
-                containerContent.children('.keditor-component').each(function () {
+                //containerContent.children('.keditor-component').each(function () {
+                containerContent.find('.keditor-component').each(function () {
                     var component = $(this);
-                    
-                    component.replaceWith(self.getComponentContent(component));
+                    var content = self.getComponentContent(component);
+                    flog('getContainerContent:content', content);
+                    component.replaceWith(content);
                 });
             });
             
@@ -1787,18 +1796,16 @@
             var options = keditor.options;
             var result = [];
             target = options.iframeMode ? keditor.body : target;
-            
-            target.find('.keditor-content-area').each(function () {
-                var html = '';
-                $(this).children('.keditor-container').each(function () {
-                    var container = $(this);
-                    
-                    html += keditor.getContainerContent(container, options);
+
+            target.find('.keditor-content-area').each(function (index1, ele1) {
+                _ele1 = $(ele1).clone();
+                $(_ele1).find('.keditor-container').each(function (index2, ele2) {
+                    var html2 = keditor.getContainerContent($(ele2), options);
+                    $(ele2).replaceWith(html2);
                 });
-                
-                result.push(html);
+                result.push($(_ele1).html());
             });
-            
+
             return inArray ? result : result.join('\n');
         },
         
